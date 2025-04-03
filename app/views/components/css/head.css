@@ -1,0 +1,53 @@
+/* Custom styles for the header */
+.header {
+    border-bottom: 1px solid #ddd;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff4500; /* Orange color for "E-Tech" */
+}
+
+.navbar-nav .nav-link {
+    color: #333;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ff4500;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.dropdown-menu {
+    border-radius: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item .nav-link i {
+    margin-right: 5px;
+}
+
+.badge {
+    font-size: 0.6rem;
+    padding: 2px 5px;
+}
+
+@media (max-width: 991px) {
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .d-flex.align-items-center {
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
