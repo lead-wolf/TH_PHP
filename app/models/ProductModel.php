@@ -168,7 +168,7 @@ class ProductModel
                 if (!move_uploaded_file($image['tmp_name'], $new_image_path)) {
                     die("Lỗi khi di chuyển file từ " . $image['tmp_name'] . " đến " . $new_image_path);
                 }
-                echo "Tải ảnh lên thành công!";
+                // echo "Tải ảnh lên thành công!";
 
                 // Di chuyển ảnh mới vào thư mục
                 // move_uploaded_file($image['tmp_name'], $new_image_path);

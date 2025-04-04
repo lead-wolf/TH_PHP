@@ -79,12 +79,10 @@ class ProductApiController
             return;
         }
 
-        // header('Content-Type: application/json');
-        $data = json_decode(file_get_contents("php://input"), true);
-        $name = $data['name'] ?? '';
-        $description = $data['description'] ?? '';
-        $price = $data['price'] ?? '';
-        $category_id = $data['category_id'] ?? null;
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
+        $price = isset($_POST['price']) ? $_POST['price'] : '';
+        $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : '';
         $result = $this->productModel->addProduct(
             $name,
             $description,
@@ -92,7 +90,7 @@ class ProductApiController
             $category_id,
             // null
         );
-        // echo json_encode($data);
+
         if (is_array($result)) {
             http_response_code(400);
             echo json_encode(['errors' => $result]);
@@ -111,23 +109,24 @@ class ProductApiController
             return;
         }
 
-        // header('Content-Type: application/json');
-        $data = json_decode(file_get_contents("php://input"), true);
-        $name = $data['name'] ?? '';
-        $description = $data['description'] ?? '';
-        $price = $data['price'] ?? '';
-        $category_id = $data['category_id'] ?? null;
-
-        // echo json_encode($data);
-
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
+        $price = isset($_POST['price']) ? $_POST['price'] : '';
+        $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : '';
         $result = $this->productModel->updateProduct(
             $id,
             $name,
             $description,
             $price,
             $category_id,
-            // null
-        );
+        );  
+
+        // echo json_encode([
+        //     $name,
+        //     $description,
+        //     $price,
+        //     $category_id,
+        // ]);
         if ($result) {
             echo json_encode(['message' => 'Product updated successfully']);
         } else {

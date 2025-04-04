@@ -14,7 +14,7 @@
         <h1 class="text-center">Sửa sản phẩm</h1>
         <div id="error-messages" class="mb-3"></div>
         <div id="success-messages" class="mb-3" style="background-color: darkseagreen;"></div>
-        <form id="edit-product-form" enctype="multipart/form-data" onsubmit="return validateForm(event);">
+        <form id="editProductForm" enctype="multipart/form-data" onsubmit="return validateForm(event);">
             <input type="hidden" id="id" name="id" />
 
             <div class="form-group mb-3">
@@ -152,6 +152,8 @@
         // Hàm validate form 
         function validateForm(event) {
             event.preventDefault();
+            const form = document.getElementById('editProductForm');
+            const formData = new FormData(form);
             const name = document.getElementById('name').value;
             const description = document.getElementById('description').value;
             const price = document.getElementById('price').value;
@@ -164,27 +166,28 @@
                     category_id: category_id
                 };
 
-            console.log(data);
+            console.log(formData.get('image'));
+            console.log(formData.get('name'));
+            console.log(formData.get('description'));
+            console.log(formData.get('price'));
+            console.log(formData.get('category_id'));  
             
             // Gửi dữ liệu cập nhật qua API
             fetch(`http://localhost/api/product/${productId}`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({
-                    name: name,
-                    description: description,
-                    price: price,
-                    category_id: category_id
-                })
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                console.log("data", data);
                 
                 if (data) {
+                    console.log(data);
+                    
                     document.getElementById('success-messages').innerHTML = `
                         <div class="alert alert-danger" style="background-color: darkseagreen;">${data.message}</div>
                     `;
@@ -194,12 +197,16 @@
                     },3000);
                     
                 } else {
+                    console.log("data",data);
+                    
                     document.getElementById('error-messages').innerHTML = `
                         <div class="alert alert-danger">${data.message}</div>
                     `;
                 }
             })
             .catch(error => {
+                console.log("error", error);
+                
                 document.getElementById('error-messages').innerHTML = `
                     <div class="alert alert-danger">Lỗi: ${error.message}</div>
                 `;

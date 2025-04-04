@@ -14,7 +14,7 @@
         <h1 class="text-center">Thêm sản phẩm mới</h1>
         <div id="error-messages" class="mb-3"></div>
 
-        <form id="add-product-form" enctype="multipart/form-data" onsubmit="addProduct(event)">
+        <form id="addProductForm" enctype="multipart/form-data" onsubmit="addProduct(event)">
             <div class="form-group mb-3">
                 <label for="name">Tên sản phẩm:</label>
                 <input type="text" id="name" name="name" class="form-control" required />
@@ -45,7 +45,7 @@
             <button type="submit" class="btn btn-primary mt-3">Thêm sản phẩm</button>
         </form>
 
-        <a href="/products" class="btn btn-secondary mt-3">Quay lại danh sách sản phẩm</a>
+        <a href="/" class="btn btn-secondary mt-3">Quay lại danh sách sản phẩm</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -86,7 +86,7 @@
         function addProduct(event) {
             event.preventDefault(); // Ngăn form submit mặc định
 
-            const form = document.getElementById('add-product-form');
+            const form = document.getElementById('addProductForm');
             const formData = new FormData(form);
             const name = document.getElementById('name').value;
             const description =document.getElementById('description').value;
@@ -99,14 +99,19 @@
                 price: price,
                 category_id: category_id
             }           
+            console.log(formData.get('image'));
+            console.log(formData.get('name'));
+            console.log(formData.get('description'));
+            console.log(formData.get('price'));
+            console.log(formData.get('category_id'));            
 
             fetch('http://localhost/api/product', {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                // 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-                body: JSON.stringify(datafetch) // Gửi FormData để hỗ trợ file upload
+                body: formData //JSON.stringify(datafetch) // Gửi FormData để hỗ trợ file upload
             })
             .then(response => {
                 if (!response.ok) throw new Error('Thêm sản phẩm thất bại');

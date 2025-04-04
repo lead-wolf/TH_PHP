@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 // require_once 'app/models/ProductModel.php';
 require_once 'app/helpers/SessionHelper.php';
 
@@ -40,6 +40,12 @@ if ($controllerName === 'ApiController' && isset($url[1])) {
                 }
                 break;
             case 'POST':
+                if ($apiControllerName === 'ProductApiController') {
+                    if ($id) {
+                        $action = 'update';
+                        break;
+                    }
+                }
                 $action = 'store';
                 break;
             case 'PUT':

@@ -11,6 +11,7 @@
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
         }
         .container {
@@ -69,6 +70,9 @@
     </style>
 </head>
 <body>
+    <div class="header" style="width: 100%; color: white; text-align: center; margin-bottom: 50px;">
+    <?php include 'app/views/components/head.php'; ?>
+    </div>
     <div class="container">
         <div class="card">
             <div class="card-header">

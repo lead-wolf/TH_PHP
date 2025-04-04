@@ -154,7 +154,7 @@
             .then(response => {
                 if (response.ok) {
                     alert('Sản phẩm đã được xóa thành công.');
-                    fetchProducts(); // Refresh product list
+                    window.location.reload();
                 } else {
                     alert('Không thể xóa sản phẩm. Vui lòng thử lại.');
                 }

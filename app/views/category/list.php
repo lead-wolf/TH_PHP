@@ -1,3 +1,5 @@
+<?php include 'app/views/components/head.php'; ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
