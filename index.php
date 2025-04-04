@@ -1,10 +1,12 @@
 <?php
 session_start();
-require_once 'app/models/ProductModel.php';
+// require_once 'app/models/ProductModel.php';
 require_once 'app/helpers/SessionHelper.php';
 
-require_once 'app/controllers/ProductApiController.php';
-require_once 'app/controllers/CategoryApiController.php';
+// require_once 'app/controllers/ProductApiController.php';
+// require_once 'app/controllers/CategoryApiController.php';
+// require_once 'app/controllers/AccountApiController.php';
+
 // Product/add
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
@@ -20,6 +22,10 @@ $action = isset($url[1]) && $url[1] != '' ? $url[1] : 'index';
 // Định tuyến các yêu cầu API
 if ($controllerName === 'ApiController' && isset($url[1])) {
     $apiControllerName = ucfirst($url[1]) . 'ApiController';
+    if ($apiControllerName === 'AccountApiController') {
+        require_once 'app/controllers/AccountApiController.php';
+        exit;
+    }
     if (file_exists('app/controllers/' . $apiControllerName . '.php')) {
         require_once 'app/controllers/' . $apiControllerName . '.php';
         $controller = new $apiControllerName();
@@ -75,6 +81,7 @@ if (file_exists('app/controllers/' . $controllerName . '.php')) {
 } else {
     die('Controller not found');
 }
+
 // Kiểm tra và gọi action
 if (method_exists($controller, $action)) {
     call_user_func_array([$controller, $action], array_slice($url, 2));

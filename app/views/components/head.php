@@ -9,6 +9,8 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
     <style>
         .navlink {
             color: rgba(var(--bs-link-color-rgb)); /* Giữ màu chữ giống với phần tử cha, không dùng màu xanh mặc định */
@@ -16,7 +18,6 @@
             cursor: default; /* Đặt con trỏ chuột thành mũi tên mặc định */
         }
 
-        /* Nếu bạn muốn thay đổi màu khi hover (tùy chọn) */
         .navlink:hover {
             color: inherit; /* Giữ màu khi hover, hoặc bạn có thể đổi màu khác */
             text-decoration: none; /* Đảm bảo không có gạch chân khi hover */
@@ -39,11 +40,9 @@
                         <li class="nav-item">
                             <a class="nav-link active btn btn-warning text-dark me-2" href="/product">Trang Chủ</a>
                         </li>
-                        <?php if (SessionHelper::isAdmin()): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Product/add">Thêm sản phẩm</a>
-                            </li>
-                        <?php endif; ?>
+                        <li class="nav-item" id="addProduct" style="display: none;">
+                            <a class="nav-link" href="/Product/add">Thêm sản phẩm</a>
+                        </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="/Product/add">Thêm SP</a>
                         </li> -->
@@ -61,11 +60,9 @@
                                 <li><a class="dropdown-item" href="#">Web Cam</a></li>
                             </ul>
                         </li>
-                        <?php if (SessionHelper::isAdmin()): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Category/">Danh mục</a>
-                            </li>
-                        <?php endif; ?>
+                        <li class="nav-item" id="Category" style="display: none;">
+                            <a class="nav-link" href="/Category/">Danh mục</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên Hệ</a>
                         </li>
@@ -81,42 +78,14 @@
                 </div>
                 <div>
                     <!-- Right Side Icons -->
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center" id="rightIcon">
                         <a href="#" class="me-3"><i class="fas fa-search"></i></a>
                         <a href="/Product/cart" class="me-3 position-relative">
                             <i class="fas fa-shopping-cart"></i>
-                            <?php
-                            // Kiểm tra xem giỏ hàng có tồn tại trong session không
-                            if (isset($_SESSION['cart'])) {
-                                $totalQuantity = 0;
-                                
-                                // Duyệt qua tất cả sản phẩm trong giỏ hàng
-                                foreach ($_SESSION['cart'] as $item) {
-                                    // Cộng dồn số lượng sản phẩm
-                                    $totalQuantity += $item['quantity'];
-                                }
-                                
-                                echo "<span class='badge bg-warning text-dark rounded-circle position-absolute top-0 start-100 translate-middle'>". htmlspecialchars($totalQuantity) ."</span>" ;
-                            } else {
-                                echo "<span class='badge bg-warning text-dark rounded-circle position-absolute top-0 start-100 translate-middle'>0</span>";
-                            }
-                            ?>
-                            
+                                <span class='badge bg-warning text-dark rounded-circle position-absolute top-0 start-100 translate-middle'>0</span>
                         </a>
                         <!-- <a href="#" class="me-3"><i class="fas fa-user"></i></a> -->
-                        <?php
-                            if (SessionHelper::isLoggedIn()) {
-                                echo "<a class='navlink ms-2'><i class='fas fa-user me-2'></i>". htmlspecialchars($_SESSION['username']) . "(" . SessionHelper::getRole() . ")</a>";
-                            } else {
-                                echo "<a class='nav-link' href='/account/login'>Login</a>";
-                            }
-                            ?>
-                        </a>
-                        <?php
-                        if (SessionHelper::isLoggedIn()) {
-                            echo "<a class='nav-link ms-2' href='/account/logout'>Logout</a>";
-                        }
-                        ?>
+                        
                     </div>
                 </div>
                 <!-- Toggle button for mobile -->
@@ -155,6 +124,63 @@
             </div>
         </div>
     </header>
+
+    <script>
+        const token = localStorage.getItem('token');
+        let isAdmin = false;
+        if (token) {
+            let decoded;
+            try {
+                decoded = jwt_decode(token); 
+                isAdmin = decoded.data.role === 'admin';
+            } catch (error) {
+                console.log('Invalid token:', error);
+            }
+            
+            // console.log(decoded);
+            
+            const rightIcon = document.getElementById('rightIcon');
+            rightIcon.innerHTML += `<a class='navlink ms-2'><i class='fas fa-user me-2'></i>${decoded.data.fullname} (${decoded.data.role})</a> \n 
+<a class='nav-link ms-2' href='/account/logout' onclick='handleLogout(event)'>Logout</a>`;
+            
+        }else{
+            const rightIcon = document.getElementById('rightIcon');
+            rightIcon.innerHTML += "<a class='nav-link' href='/account/login'>Login</a>";
+        }
+
+        if (isAdmin) {
+            const category = document.getElementById('Category');
+            const addProduct = document.getElementById('addProduct');
+            category.style.display = 'block';
+            addProduct.style.display = 'block';
+        }
+
+        function handleLogout(event) {
+            event.preventDefault(); // Prevent default link behavior
+            localStorage.clear(); // Clear all localStorage
+            alert('Bạn đã logout thành công!'); // Display logout notification
+            fetch('http://localhost/api/account/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            window.location.href = '/';
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartBadge = document.querySelector('.fa-shopping-cart + .badge');
+            if (cartBadge) {
+                cartBadge.textContent = totalQuantity;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadge();
+        });
+    </script>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

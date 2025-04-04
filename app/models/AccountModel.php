@@ -23,7 +23,7 @@ class AccountModel {
             $stmt = $this->conn->prepare($query);
             $username = htmlspecialchars(strip_tags($username));
             $fullName = htmlspecialchars(strip_tags($fullName));
-            $password = password_hash($password, PASSWORD_BCRYPT);
+            $password = htmlspecialchars(strip_tags( $password));
             $role = htmlspecialchars(strip_tags($role));
             $stmt->bindParam(":username", $username);
             $stmt->bindParam(":fullname", $fullName);

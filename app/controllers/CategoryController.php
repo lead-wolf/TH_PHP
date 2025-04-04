@@ -41,10 +41,11 @@ class CategoryController
     }
 
     // Hiển thị form chỉnh sửa
-    public function edit($id)
+    public function edit()
     {
-        $category = $this->categoryModel->getCategoryById($id);
         include 'app/views/category/edit.php';
+        // $category = $this->categoryModel->getCategoryById($id);
+        // include 'app/views/category/edit.php';
     }
 
     // Thực hiện cập nhật danh mục

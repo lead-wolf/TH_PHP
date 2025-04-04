@@ -24,24 +24,25 @@ class ProductController
         // include 'app/views/product/list.php';
         include 'app/views/home.php';
     }
-    public function show($id)
+    public function show()
     {
-        $product = $this->productModel->getProductById($id);
-        $categories = (new CategoryModel($this->db))->getCategoryById($product->category_id);
+        include 'app/views/product/show.php';
+        // $product = $this->productModel->getProductById($id);
+        // $categories = (new CategoryModel($this->db))->getCategoryById($product->category_id);
 
-        if ($product) {
-            include 'app/views/product/show.php';
-        } else {
-            echo "Không thấy sản phẩm.";
-        }
+        // if ($product) {
+        //     include 'app/views/product/show.php';
+        // } else {
+        //     echo "Không thấy sản phẩm.";
+        // }
     }
     public function add()
     {
-        if (!$this->isAdmin()) {
-            echo "Bạn không có quyền truy cập chức năng này!";
-            exit;
-        }
-        $categories = (new CategoryModel($this->db))->getCategories();
+        // if (!$this->isAdmin()) {
+        //     echo "Bạn không có quyền truy cập chức năng này!";
+        //     exit;
+        // }
+        // $categories = (new CategoryModel($this->db))->getCategories();
         include_once 'app/views/product/add.php';
     }
     public function save()
@@ -62,19 +63,20 @@ class ProductController
             }
         }
     }
-    public function edit($id)
+    public function edit()
     {
-        if (!$this->isAdmin()) {
-            echo "Bạn không có quyền truy cập chức năng này!";
-            exit;
-        }
-        $product = $this->productModel->getProductById($id);
-        $categories = (new CategoryModel($this->db))->getCategories();
-        if ($product) {
-            include 'app/views/product/edit.php';
-        } else {
-            echo "Không thấy sản phẩm.";
-        }
+        include 'app/views/product/edit.php';
+        // if (!$this->isAdmin()) {
+        //     echo "Bạn không có quyền truy cập chức năng này!";
+        //     exit;
+        // }
+        // $product = $this->productModel->getProductById($id);
+        // $categories = (new CategoryModel($this->db))->getCategories();
+        // if ($product) {
+        //     include 'app/views/product/edit.php';
+        // } else {
+        //     echo "Không thấy sản phẩm.";
+        // }
     }
     public function update()
     {        

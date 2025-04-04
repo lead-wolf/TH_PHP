@@ -62,53 +62,91 @@
 <body>
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg" style="width: 450px;">
-        <div class="card-header text-center">
-            Đăng Ký Tài Khoản
-        </div>
-        <div class="card-body">
-            <?php
-            if (isset($errors)) {
-                echo "<ul>";
-                foreach ($errors as $err) {
-                    echo "<li class='text-danger'>$err</li>";
-                }
-                echo "</ul>";
-            }
-            ?>
-            <form class="user" action="/account/save" method="post">
-                <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <input type="text" class="form-control form-control-user" id="username" name="username"
-                               placeholder="Tên người dùng" required>
+        <div class="card shadow-lg" style="width: 450px;">
+            <div class="card-header text-center">
+                Đăng Ký Tài Khoản
+            </div>
+            <div class="card-body">
+                <div id="error-messages" class="mb-3"></div>
+                <form class="user" id="register-form" onsubmit="register(event)">
+                    <div class="form-group row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <input type="text" class="form-control form-control-user" id="username" name="username"
+                                   placeholder="Tên người dùng" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control form-control-user" id="fullname" name="fullname"
+                                   placeholder="Họ và tên" required>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control form-control-user" id="fullname" name="fullname"
-                               placeholder="Họ và tên" required>
+                    <div class="form-group row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <input type="password" class="form-control form-control-user" id="password" name="password"
+                                   placeholder="Mật khẩu" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control form-control-user" id="confirmpassword"
+                                   name="confirmpassword" placeholder="Nhập lại mật khẩu" required>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <input type="password" class="form-control form-control-user" id="password" name="password"
-                               placeholder="Mật khẩu" required>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary btn-icon-split p-3" type="submit">
+                            Đăng Ký
+                        </button>
                     </div>
-                    <div class="col-sm-6">
-                        <input type="password" class="form-control form-control-user" id="confirmpassword"
-                               name="confirmpassword" placeholder="Nhập lại mật khẩu" required>
-                    </div>
-                </div>
-                <div class="form-group text-center">
-                    <button class="btn btn-primary btn-icon-split p-3" type="submit">
-                        Đăng Ký
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        function register(event) {
+            event.preventDefault(); // Ngăn form submit mặc định
+
+            const form = document.getElementById('register-form');
+            const formData = new FormData(form);
+            const data = {
+                username: formData.get('username'),
+                fullname: formData.get('fullname'),
+                password: formData.get('password'),
+                confirmpassword: formData.get('confirmpassword')
+            };
+
+            fetch('http://localhost/api/account/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Đăng ký thất bại');
+                return response.json();
+            })
+            .then(result => {
+                const errorMessages = document.getElementById('error-messages');
+                if (result.status === 'success') {
+                    errorMessages.innerHTML = `
+                        <div class="alert alert-success">${result.message}</div>
+                    `;
+                    setTimeout(() => window.location.href = 'account/login', 2000);
+                } else {
+                    let errorHtml = '<ul class="text-danger">';
+                    for (const [key, value] of Object.entries(result.errors)) {
+                        errorHtml += `<li>${value}</li>`;
+                    }
+                    errorHtml += '</ul>';
+                    errorMessages.innerHTML = errorHtml;
+                }
+            })
+            .catch(error => {
+                document.getElementById('error-messages').innerHTML = `
+                    <div class="alert alert-danger">Lỗi: ${error.message}</div>
+                `;
+            });
+        }
+    </script>
 </body>
 </html>

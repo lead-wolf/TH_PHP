@@ -3,8 +3,8 @@
         private $host = "localhost";
         private $db_name = "my_store";
         private $username = "root";
-        // private $password = "";
-        private $password = "Admin@123";
+        private $password = "";
+        // private $password = "Admin@123";
         public $conn;
         public function getConnection() {
         $this->conn = null;

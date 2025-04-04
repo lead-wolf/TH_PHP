@@ -1,4 +1,4 @@
-<?php include 'app/views/shares/header.php'; ?>
+<?php include 'app/views/components/head.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -74,11 +74,11 @@
         </div>
     <?php else: ?>
         <div class="alert alert-warning text-center">
-            🛒 Giỏ hàng của bạn đang trống. <a href="/Product" class="alert-link">Tiếp tục mua sắm</a>!
+            🛒 Giỏ hàng của bạn đang trống. <a href="/" class="alert-link">Tiếp tục mua sắm</a>!
         </div>
     <?php endif; ?>
 </div>
 
 </body>
-<?php include 'app/views/shares/footer.php'; ?>
+<!-- <?php include 'app/views/shares/footer.php'; ?> -->
 

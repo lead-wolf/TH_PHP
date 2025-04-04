@@ -32,6 +32,7 @@ class ProductModel
     
     public function addProduct($name, $description, $price, $category_id)
     {
+        // echo json_encode([$name, $description, $price, $category_id]);
         $errors = [];
         if (empty($name)) {
             $errors['name'] = 'Tên sản phẩm không được để trống';
@@ -95,6 +96,7 @@ class ProductModel
 
     public function updateProduct($id, $name, $description, $price, $category_id)
     {
+        // echo json_encode([$id, $name, $description, $price, $category_id]);
         // var_dump($category_id);
         $errors = [];
         if (empty($name)) {
